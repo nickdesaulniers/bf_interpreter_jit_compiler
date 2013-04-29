@@ -1,14 +1,15 @@
-file_io:
-	clang file_io.c -c -o file_io.o
+# http://www.puxan.com/Computers/Howto-write-generic-Makefiles
+CC=clang
+CFLAGS=-O3 -Wall -Wextra
 
-bf:
-	clang bf.c -c -o bf.o
+# Generic rule
+# $< is first dependency filename
+# $@ is the target filename
+%.o: %.c
+	$(CC) $(CFLAGS) $< -c -o $@
 
-main:
-	clang main.c -c -o main.o
-
-v1: file_io bf main
-	clang file_io.o bf.o main.o -o main
+v1: file_io.o bf.o main.o
+	$(CC) $(CFLAGS) file_io.o bf.o main.o -o main
 
 clean:
 	rm a.out main *.o
