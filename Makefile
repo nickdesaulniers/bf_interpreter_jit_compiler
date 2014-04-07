@@ -8,8 +8,8 @@ CFLAGS=-O3 -Wall -Wextra
 %.o: %.c
 	$(CC) $(CFLAGS) $< -c -o $@
 
-v1: file_io.o bf.o main.o
-	$(CC) $(CFLAGS) file_io.o bf.o main.o -o main
+v1: file_io.o bf.o interpret.o
+	$(CC) $(CFLAGS) file_io.o bf.o interpret.o -o interpret
 
 clean:
 	rm a.out main *.o

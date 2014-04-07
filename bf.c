@@ -4,7 +4,7 @@
 
 void interpret (const char* const input) {
   // Initialize the tape with 30,000 zeroes.
-  unsigned char tape [3000] = {0};
+  unsigned char tape [30000] = {0};
 
   // Set the pointer to point at the left most cell of the tape.
   unsigned char* ptr = tape;
