@@ -11,8 +11,8 @@ CFLAGS=-O3 -Wall -Wextra
 v1: file_io.o bf.o interpret.o
 	$(CC) $(CFLAGS) file_io.o bf.o interpret.o -o interpret
 
-v2: file_io.o compile.o
-	$(CC) $(CFLAGS) file_io.o compile.o -o compile
+v2: file_io.o stack.o compile.o
+	$(CC) $(CFLAGS) file_io.o stack.o compile.o -o compile
 
 convert: v2
 	./compile nick.bf > test.s
@@ -20,6 +20,10 @@ convert: v2
 test: convert
 	as -g test.s -o test.o
 	ld test.o -e _main -lc -macosx_version_min 10.8.5
+
+stack: stack.o test_stack.o
+	$(CC) $(CFLAGS) stack.o test_stack.o -o test_stack
+
 
 clean:
 	rm a.out main *.o

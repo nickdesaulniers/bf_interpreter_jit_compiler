@@ -38,6 +38,11 @@ Test decrement pointer
 <
 .
 
+Test square brackets
+[]
+[]
+[[]]
+
 Test getchar and putchar
 ,
 .

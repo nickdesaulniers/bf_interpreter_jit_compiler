@@ -1,5 +1,6 @@
 a.out
 compile
 interpret
+test_stack
 test.s
 
