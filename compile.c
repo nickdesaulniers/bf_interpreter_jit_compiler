@@ -4,7 +4,7 @@
 
 void compile (const char* const file_contents) {
   int num_brackets = 0;
-  int close_bracket = 0;
+  int matching_bracket = 0;
   n_stack_t stack = {
     .size = 0,
     .items = {0}
@@ -51,19 +51,18 @@ void compile (const char* const file_contents) {
         break;
       case '[':
         if(push(&stack, num_brackets) == 0) {
+          puts("  cmpb $0, (%r12)");
+          printf("  je bracket_%d_end\n", num_brackets);
           printf("bracket_%d_start:\n", num_brackets++);
         } else {
           err("out of stack space, too much nesting");
         }
-        // if the byte at the data pointer is zero, then instead of moving the
-        // instruction pointer forward to the next command, jump it forward to
-        // the command after the matching ] command.
-        // jz # jump if zero
-        // jnz # jump if not zero
         break;
       case ']':
-        if (pop(&stack, &close_bracket) == 0) {
-          printf("bracket_%d_end:\n", close_bracket);
+        if (pop(&stack, &matching_bracket) == 0) {
+          puts("  cmpb $0, (%r12)");
+          printf("  jne bracket_%d_start\n", matching_bracket);
+          printf("bracket_%d_end:\n", matching_bracket);
         } else {
           err("stack underflow, unmatched brackets");
         }
