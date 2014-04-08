@@ -16,25 +16,31 @@ void compile (const char* const file_contents) {
     "  movq %rsp, %r12";
   puts(prolog);
 
-  for (int i = 0; i < strlen(file_contents); ++i) {
-    fprintf(stderr, "%c\n", file_contents[i]);
+  for (unsigned long i = 0; i < strlen(file_contents); ++i) {
+    fprintf(stderr, "%c", file_contents[i]);
     switch (file_contents[i]) {
       case '>':
+        puts("  inc %r12");
         break;
       case '<':
+        puts("  dec %r12");
         break;
       case '+':
         puts("  incb (%r12)");
         break;
       case '-':
+        puts("  decb (%r12)");
         break;
       case '.':
-        puts("  movq $0, %rdi"); // zero out the register since putchar takes an int
+        // zero out the register since putchar takes an int
         // otherwise use movzbq
+        puts("  movq $0, %rdi");
         puts("  movb (%r12), %dil");
         puts("  call _putchar");
         break;
       case ',':
+        puts("  call _getchar");
+        puts("  movb %al, (%r12)");
         break;
       case '[':
         break;
