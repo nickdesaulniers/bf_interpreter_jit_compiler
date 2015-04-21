@@ -1,4 +1,3 @@
-#include <string.h>
 #include "file_io.h"
 #include "stack.h"
 
@@ -23,7 +22,7 @@ void compile (const char* const file_contents) {
     "  movq %rsp, %r12";
   puts(prolog);
 
-  for (unsigned long i = 0; i < strlen(file_contents); ++i) {
+  for (unsigned long i = 0; file_contents[i] != '\0'; ++i) {
     fprintf(stderr, "%c", file_contents[i]);
     switch (file_contents[i]) {
       case '>':
