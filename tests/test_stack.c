@@ -1,7 +1,7 @@
-#include "stack.h"
+#include "../stack.h"
 
 int main () {
-  stack_t stack = {
+  n_stack_t stack = {
     .size = 0,
     .items = {0}
   };
