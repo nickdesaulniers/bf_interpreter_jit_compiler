@@ -1,6 +1,6 @@
 // https://gist.github.com/maxcountryman/1699708
 // http://www.muppetlabs.com/~breadbox/bf/
-#include "bf.h"
+#include "file_io.h"
 
 void interpret (const char* const input) {
   // Initialize the tape with 30,000 zeroes.
@@ -47,3 +47,17 @@ void interpret (const char* const input) {
     }
   }
 }
+
+int main (int argc, char* argv []) {
+  if (argc != 2) err("Usage: interpret inputfile");
+
+  FILE* fp = fopen(argv[1], "r");
+  if (fp == NULL) err("Couldn't open file");
+
+  char* file_contents = read_file(fp);
+  interpret(file_contents);
+
+  free(file_contents);
+  fclose(fp);
+}
+
