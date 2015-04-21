@@ -26,4 +26,4 @@ stack: stack.o test_stack.o
 
 
 clean:
-	rm a.out main *.o
+	rm a.out main *.o interpret compile test_stack
