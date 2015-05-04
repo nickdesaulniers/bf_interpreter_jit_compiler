@@ -1,6 +1,6 @@
 #include "stack.h"
 
-int push (struct stack* p, int x) {
+int push (struct stack* const p, const int x) {
   if (p->size == STACKSIZE) {
     return -1;
   } else {
@@ -9,7 +9,7 @@ int push (struct stack* p, int x) {
   }
 }
 
-int pop (struct stack* p, int* x) {
+int pop (struct stack* const p, int* x) {
   if (p->size == 0) {
     return -1;
   } else {
@@ -17,3 +17,4 @@ int pop (struct stack* p, int* x) {
     return 0;
   }
 }
+
