@@ -4,7 +4,7 @@ struct vector {
   char* data;
 };
 
-int vector_create (struct vector* vec, int capacity);
+int vector_create (struct vector* const vec, int capacity);
 int vector_destroy (struct vector* vec);
-int vector_push (struct vector* vec, char* bytes, int len);
+int vector_push (struct vector* const vec, char* bytes, int len);
 

@@ -2,7 +2,7 @@
 #include <string.h> // memcpy
 #include "vector.h"
 
-int vector_create (struct vector* vec, int capacity) {
+int vector_create (struct vector* const vec, int capacity) {
   vec->size = 0;
   vec->capacity = capacity;
   vec->data = malloc(capacity * sizeof(char));
@@ -10,20 +10,24 @@ int vector_create (struct vector* vec, int capacity) {
 }
 
 int vector_destroy (struct vector* vec) {
-  if (vec->data == NULL) {
+  if (vec == NULL || vec->data == NULL) {
     return -1;
   }
   vec->size = 0;
   vec->capacity = 0;
   free(vec->data);
   vec->data = NULL;
+  vec = NULL;
   return 0;
 }
 
-int vector_push (struct vector* vec, char* bytes, int len) {
+int vector_push (struct vector* const vec, char* bytes, int len) {
   if (vec->size + len > vec->capacity) {
     vec->capacity *= 2;
     vec->data = realloc(vec->data, vec->capacity * sizeof(char));
+    if (vec->data == NULL) {
+      return -1;
+    }
   }
   memcpy(vec->data + vec->size, bytes, len);
   vec->size += len;
