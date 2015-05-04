@@ -1,6 +1,6 @@
 #include "stack.h"
 
-int push (n_stack_t* p, int x) {
+int push (struct stack* p, int x) {
   if (p->size == STACKSIZE) {
     return -1;
   } else {
@@ -9,7 +9,7 @@ int push (n_stack_t* p, int x) {
   }
 }
 
-int pop (n_stack_t* p, int* x) {
+int pop (struct stack* p, int* x) {
   if (p->size == 0) {
     return -1;
   } else {

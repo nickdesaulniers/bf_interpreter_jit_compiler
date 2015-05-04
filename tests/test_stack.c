@@ -1,7 +1,8 @@
+#include <assert.h>
 #include "../stack.h"
 
 int main () {
-  n_stack_t stack = {
+  struct stack stack = {
     .size = 0,
     .items = {0}
   };
@@ -13,8 +14,10 @@ int main () {
   int x = 0;
   if (pop(&stack, &x) == 0) {
     printf("%d\n", x);
+    assert(x == 3);
   }
   if (pop(&stack, &x) == 0) {
     printf("%d\n", x);
+    assert(x == 2);
   }
 }
