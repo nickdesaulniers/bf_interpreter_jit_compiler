@@ -21,14 +21,12 @@ int vector_destroy (struct vector* vec) {
 }
 
 int vector_push (struct vector* vec, char* bytes, int len) {
-  if (vec->size + len < vec->capacity) {
-    memcpy(vec->data + vec->size, bytes, len);
-    vec->size += len;
-    return 0;
-  } else {
+  if (vec->size + len > vec->capacity) {
     vec->capacity *= 2;
     vec->data = realloc(vec->data, vec->capacity * sizeof(char));
-    return vector_push(vec, bytes, len);
   }
+  memcpy(vec->data + vec->size, bytes, len);
+  vec->size += len;
+  return 0;
 }
 
