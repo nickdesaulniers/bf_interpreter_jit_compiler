@@ -1,8 +1,7 @@
-#include <stdio.h>
 #define STACKSIZE 100
 
 struct stack {
-  size_t size;
+  int size;
   int items [STACKSIZE];
 };
 
