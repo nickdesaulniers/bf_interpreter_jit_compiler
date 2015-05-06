@@ -34,3 +34,15 @@ int vector_push (struct vector* const vec, char* bytes, int len) {
   return 0;
 }
 
+int vector_write32LE (struct vector* const vec, int offset, int32_t value) {
+  if (offset >= vec->size) {
+    return -1;
+  }
+  // offset opposite of usual since we explicitly want LE
+  vec->data[offset + 3] = (value & 0xFF000000) >> 24;
+  vec->data[offset + 2] = (value & 0x00FF0000) >> 16;
+  vec->data[offset + 1] = (value & 0x0000FF00) >> 8;
+  vec->data[offset + 0] = (value & 0x000000FF);
+  return 0;
+}
+
