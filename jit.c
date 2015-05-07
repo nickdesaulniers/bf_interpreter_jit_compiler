@@ -1,3 +1,4 @@
+#include <assert.h> // assert
 #include <stdio.h> // putchar, getchar
 #include <string.h> // memcpy
 #include <sys/mman.h> // mmap
@@ -6,7 +7,8 @@
 #include "file_io.h"
 #include "debug.h"
 
-#define GUARD(expr) if ((expr) != 0) err("Failed guard\n");
+// return 0 is success
+#define GUARD(expr) assert(!(expr))
 
 typedef void* fn_memset (void*, int, size_t);
 typedef int fn_putchar (int);

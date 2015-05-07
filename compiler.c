@@ -68,11 +68,6 @@ void compile (const char* const file_contents) {
         break;
     }
   }
-  /*const char* const body =*/
-    /*"  movb $0, %al\n"*/
-    /*"  movq $78, %rdi\n"*/
-    /*"  call _putchar\n";*/
-  /*puts(body);*/
   const char* const epilog =
     "  addq $30000, %rsp\n" // clean up tape from stack.
     "  popq %rbp\n"
@@ -82,13 +77,10 @@ void compile (const char* const file_contents) {
 
 int main (int argc, char* argv []) {
   if (argc != 2) err("Usage: compile inputfile");
-
   FILE* fp = fopen(argv[1], "r");
   if (fp == NULL) err("Couldn't open file");
-
   char* file_contents = read_file(fp);
   compile(file_contents);
-
   free(file_contents);
   fclose(fp);
 }
