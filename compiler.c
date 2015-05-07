@@ -25,7 +25,6 @@ void compile (const char* const file_contents) {
   puts(prolog);
 
   for (unsigned long i = 0; file_contents[i] != '\0'; ++i) {
-    fprintf(stderr, "%c", file_contents[i]);
     switch (file_contents[i]) {
       case '>':
         puts("  inc %r12");
