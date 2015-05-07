@@ -2,24 +2,22 @@
 #include <assert.h>
 #include "../stack.h"
 
+// return 0 is success
+#define GUARD(expr) assert(!(expr))
+
 int main () {
-  struct stack stack = {
-    .size = 0,
-    .items = { 0 }
-  };
+  struct stack stack = { .size = 0, .items = { 0 } };
 
   puts("testing STACKSIZE");
   assert(STACKSIZE == 100);
 
   puts("testing pushes");
-  int rc = stack_push(&stack, 1);
-  assert(rc == 0);
+  GUARD(stack_push(&stack, 1));
   assert(stack.size == 1);
   assert(stack.items != NULL);
   assert(stack.items[0] == 1);
 
-  rc = stack_push(&stack, 2);
-  assert(rc == 0);
+  GUARD(stack_push(&stack, 2));
   assert(stack.size == 2);
   assert(stack.items != NULL);
   assert(stack.items[0] == 1);
@@ -27,21 +25,19 @@ int main () {
 
   puts("testing pops");
   int x = 0;
-  rc = stack_pop(&stack, &x);
-  assert(rc == 0);
+  GUARD(stack_pop(&stack, &x));
   assert(x == 2);
   assert(stack.size == 1);
   assert(stack.items != NULL);
   assert(stack.items[0] == 1);
 
-  rc = stack_pop(&stack, &x);
-  assert(rc == 0);
+  GUARD(stack_pop(&stack, &x));
   assert(x == 1);
   assert(stack.size == 0);
   assert(stack.items != NULL);
 
   puts("testing excessive pops");
-  rc = stack_pop(&stack, &x);
+  int rc = stack_pop(&stack, &x);
   assert(rc == -1);
   assert(x == 1);
   assert(stack.size == 0);
@@ -49,3 +45,4 @@ int main () {
 
   puts("tests pass");
 }
+
