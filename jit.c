@@ -54,10 +54,8 @@ static void jit (const char* const file_contents, fn_memset m, fn_putchar p,
     0x49, 0x89, 0xE4 // movq %rsp, %r12
     // %r12 = &tape[0];
   }, 52));
-  /*print_instruction_stream(&instruction_stream);*/
 
   for (unsigned long i = 0; file_contents[i] != '\0'; ++i) {
-    /*fprintf(stderr, "%c", file_contents[i]);*/
     switch (file_contents[i]) {
       case '>':
         GUARD(vector_push(&instruction_stream, (char[]) {
@@ -93,7 +91,6 @@ static void jit (const char* const file_contents, fn_memset m, fn_putchar p,
         }, 7));
         break;
       case '[':
-        printf("open bracket, instruction_stream.size: %d\n", instruction_stream.size);
         GUARD(vector_push(&instruction_stream, (char[]) {
           0x41, 0x80, 0x3C, 0x24, 0x00, // cmpb $0, (%r12)
           // Needs to be patched up
@@ -102,21 +99,15 @@ static void jit (const char* const file_contents, fn_memset m, fn_putchar p,
         GUARD(stack_push(&relocation_table, instruction_stream.size)); // create a label after
         break;
       case ']':
-        printf("close bracket, instruction_stream.size before: %d\n", instruction_stream.size);
         GUARD(vector_push(&instruction_stream, (char[]) {
           0x41, 0x80, 0x3C, 0x24, 0x00, // cmpb $0, (%r12)
           // Needs to be patched up
           0x0F, 0x85, 0x00, 0x00, 0x00, 0x00 // jne <33b relative offset, 2's compliment, LE>
         }, 11));
-        printf("close bracket, instruction_stream.size after: %d\n", instruction_stream.size);
+        // patches self and matching open bracket
         GUARD(stack_pop(&relocation_table, &relocation_site));
-        printf("matching relocation site: %d\n", relocation_site);
         relative_offset = instruction_stream.size - relocation_site ;
-        printf("relative backwards offset: %d\n", -relative_offset);
-        // set 4 bytes to 2's compliment little endian
         vector_write32LE(&instruction_stream, instruction_stream.size - 4, -relative_offset);
-        // patch up [: set 4 bytes to 2's compliment little endian
-        printf("relative forwards offset: %d\n", relative_offset);
         vector_write32LE(&instruction_stream, relocation_site - 4, relative_offset);
         break;
     }
@@ -136,14 +127,9 @@ static void jit (const char* const file_contents, fn_memset m, fn_putchar p,
 
   void* mem = mmap(NULL, instruction_stream.size, PROT_WRITE | PROT_EXEC,
     MAP_ANON | MAP_PRIVATE, -1, 0);
-
   memcpy(mem, instruction_stream.data, instruction_stream.size);
-
   void (*jitted_func) (fn_memset, fn_putchar, fn_getchar) = mem;
-
   jitted_func(m, p, g);
-
-  jitted_func = NULL;
   munmap(mem, instruction_stream.size);
   vector_destroy(&instruction_stream);
 }
