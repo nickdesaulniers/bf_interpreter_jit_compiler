@@ -49,7 +49,7 @@ void compile (const char* const file_contents) {
         puts("  movb %al, (%r12)");
         break;
       case '[':
-        if(push(&stack, num_brackets) == 0) {
+        if(stack_push(&stack, num_brackets) == 0) {
           puts("  cmpb $0, (%r12)");
           printf("  je bracket_%d_end\n", num_brackets);
           printf("bracket_%d_start:\n", num_brackets++);
@@ -58,7 +58,7 @@ void compile (const char* const file_contents) {
         }
         break;
       case ']':
-        if (pop(&stack, &matching_bracket) == 0) {
+        if (stack_pop(&stack, &matching_bracket) == 0) {
           puts("  cmpb $0, (%r12)");
           printf("  jne bracket_%d_start\n", matching_bracket);
           printf("bracket_%d_end:\n", matching_bracket);

@@ -5,6 +5,6 @@ struct stack {
   int items [STACKSIZE];
 };
 
-int push (struct stack* const, const int);
-int pop (struct stack* const, int*);
+int stack_push (struct stack* const, const int);
+int stack_pop (struct stack* const, int*);
 

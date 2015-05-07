@@ -98,7 +98,7 @@ static void jit (const char* const file_contents, fn_memset m, fn_putchar p,
           // Needs to be patched up
           0x0F, 0x84, 0x00, 0x00, 0x00, 0x00 // je <32b relative offset, 2's compliment, LE>
         }, 11));
-        GUARD(push(&relocation_table, instruction_stream.size)); // create a label after
+        GUARD(stack_push(&relocation_table, instruction_stream.size)); // create a label after
         break;
       case ']':
         printf("close bracket, instruction_stream.size before: %d\n", instruction_stream.size);
@@ -108,7 +108,7 @@ static void jit (const char* const file_contents, fn_memset m, fn_putchar p,
           0x0F, 0x85, 0x00, 0x00, 0x00, 0x00 // jne <33b relative offset, 2's compliment, LE>
         }, 11));
         printf("close bracket, instruction_stream.size after: %d\n", instruction_stream.size);
-        GUARD(pop(&relocation_table, &relocation_site));
+        GUARD(stack_pop(&relocation_table, &relocation_site));
         printf("matching relocation site: %d\n", relocation_site);
         relative_offset = instruction_stream.size - relocation_site ;
         printf("relative backwards offset: %d\n", -relative_offset);
