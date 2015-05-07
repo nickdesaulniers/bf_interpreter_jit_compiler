@@ -6,10 +6,7 @@
 void compile (const char* const file_contents) {
   int num_brackets = 0;
   int matching_bracket = 0;
-  struct stack stack = {
-    .size = 0,
-    .items = {0}
-  };
+  struct stack stack = { .size = 0, .items = { 0 } };
   const char* const prolog =
     ".text\n"
     ".globl _main\n"
