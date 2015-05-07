@@ -1,5 +1,5 @@
-// https://gist.github.com/maxcountryman/1699708
-// http://www.muppetlabs.com/~breadbox/bf/
+#include <stdio.h> // putchar, getchar
+#include <stdlib.h> // NULL, free
 #include "file_io.h"
 
 void interpret (const char* const input) {
@@ -50,14 +50,9 @@ void interpret (const char* const input) {
 
 int main (int argc, char* argv []) {
   if (argc != 2) err("Usage: interpret inputfile");
-
-  FILE* fp = fopen(argv[1], "r");
-  if (fp == NULL) err("Couldn't open file");
-
-  char* file_contents = read_file(fp);
+  char* file_contents = read_file(argv[1]);
+  if (file_contents == NULL) err("Couldn't open file");
   interpret(file_contents);
-
   free(file_contents);
-  fclose(fp);
 }
 

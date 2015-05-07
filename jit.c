@@ -1,5 +1,6 @@
 #include <assert.h> // assert
 #include <stdio.h> // putchar, getchar
+#include <stdlib.h> // free
 #include <string.h> // memcpy
 #include <sys/mman.h> // mmap
 #include "vector.h"
@@ -149,11 +150,9 @@ static void jit (const char* const file_contents, fn_memset m, fn_putchar p,
 
 int main (int argc, char* argv []) {
   if (argc != 2) err("Usage: jit inputfile");
-  FILE* fp = fopen(argv[1], "r");
-  if (fp == NULL) err("Couldn't open file");
-  const char* const file_contents = read_file(fp);
+  char* file_contents = read_file(argv[1]);
+  if (file_contents == NULL) err("Couldn't open file");
   jit(file_contents, memset, putchar, getchar);
-  free((void*) file_contents);
-  fclose(fp);
+  free(file_contents);
 }
 

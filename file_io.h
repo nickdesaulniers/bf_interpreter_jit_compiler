@@ -1,5 +1,5 @@
-#include <stdio.h> // fopen, fseek, ftell, rewind, fread
-#include <stdlib.h> // malloc
-
+// prints to stderr than exits with code 1
 void err (const char* const);
-char* read_file (FILE*);
+// returns a heap allocated string, caller needs to free
+char* read_file (const char* const);
+

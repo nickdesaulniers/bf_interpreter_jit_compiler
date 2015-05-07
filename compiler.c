@@ -1,3 +1,5 @@
+#include <stdio.h> // puts, fprintf, stderr
+#include <stdlib.h> // free
 #include "file_io.h"
 #include "stack.h"
 
@@ -77,10 +79,8 @@ void compile (const char* const file_contents) {
 
 int main (int argc, char* argv []) {
   if (argc != 2) err("Usage: compile inputfile");
-  FILE* fp = fopen(argv[1], "r");
-  if (fp == NULL) err("Couldn't open file");
-  char* file_contents = read_file(fp);
+  char* file_contents = read_file(argv[1]);
+  if (file_contents == NULL) err("Unable to read file");
   compile(file_contents);
   free(file_contents);
-  fclose(fp);
 }
