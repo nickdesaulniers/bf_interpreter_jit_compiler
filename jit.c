@@ -19,7 +19,7 @@ static void jit (const char* const file_contents, fn_memset m, fn_putchar p,
   int relocation_site = 0;
   int relative_offset = 0;
   GUARD(vector_create(&instruction_stream, 100));
-  GUARD(vector_push(&instruction_stream, (char [52]) {
+  GUARD(vector_push(&instruction_stream, (char []) {
     // prolog
     0x55, // push rbp
     0x48, 0x89, 0xE5, // mov rbp, rsp
@@ -119,7 +119,7 @@ static void jit (const char* const file_contents, fn_memset m, fn_putchar p,
     }
   }
 
-  GUARD(vector_push(&instruction_stream, (char [15]) {
+  GUARD(vector_push(&instruction_stream, (char []) {
     // epilog
     0x48, 0x81, 0xC4, 0x30, 0x75, 0x00, 0x00, // addq $30000, %rsp
     // restore callee saved registers
