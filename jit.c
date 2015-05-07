@@ -1,6 +1,5 @@
 #include <stdio.h> // putchar, getchar
 #include <string.h> // memcpy
-#include <stdlib.h> // exit
 #include <sys/mman.h> // mmap
 #include "vector.h"
 #include "stack.h"
