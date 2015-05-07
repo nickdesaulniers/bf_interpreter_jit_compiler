@@ -1,3 +1,6 @@
+Meant to test compiler output; not run
+Warning: Contains infinite loop
+
 Test increment value
 +++++ +++++
 +++++ +++++
