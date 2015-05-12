@@ -7,7 +7,7 @@ void compile (const char* const file_contents) {
   int num_brackets = 0;
   int matching_bracket = 0;
   struct stack stack = { .size = 0, .items = { 0 } };
-  const char* const prolog =
+  const char* const prologue =
     ".text\n"
     ".globl _main\n"
     "_main:\n"
@@ -19,7 +19,7 @@ void compile (const char* const file_contents) {
     "  movq $30000, %rdx\n" // length 30,000 B
     "  call _memset\n"      // memset
     "  movq %rsp, %r12";
-  puts(prolog);
+  puts(prologue);
 
   for (unsigned long i = 0; file_contents[i] != '\0'; ++i) {
     switch (file_contents[i]) {
@@ -66,11 +66,11 @@ void compile (const char* const file_contents) {
         break;
     }
   }
-  const char* const epilog =
+  const char* const epilogue =
     "  addq $30000, %rsp\n" // clean up tape from stack.
     "  popq %rbp\n"
     "  ret\n";
-  puts(epilog);
+  puts(epilogue);
 }
 
 int main (int argc, char* argv []) {

@@ -23,7 +23,7 @@ static void jit (const char* const file_contents, fn_memset m, fn_putchar p,
   int relative_offset = 0;
   GUARD(vector_create(&instruction_stream, 100));
   GUARD(vector_push(&instruction_stream, (char []) {
-    // prolog
+    // prologue
     0x55, // push rbp
     0x48, 0x89, 0xE5, // mov rbp, rsp
     // backup callee saved registers
@@ -87,7 +87,7 @@ static void jit (const char* const file_contents, fn_memset m, fn_putchar p,
       case ',':
         GUARD(vector_push(&instruction_stream, (char[]) {
           0x41, 0xFF, 0xD6, // callq *%r14
-          0x41, 0x88, 0x04, 0x24 // movb %al, (%r12
+          0x41, 0x88, 0x04, 0x24 // movb %al, (%r12)
         }, 7));
         break;
       case '[':
@@ -114,7 +114,7 @@ static void jit (const char* const file_contents, fn_memset m, fn_putchar p,
   }
 
   GUARD(vector_push(&instruction_stream, (char []) {
-    // epilog
+    // epilogue
     0x48, 0x81, 0xC4, 0x30, 0x75, 0x00, 0x00, // addq $30000, %rsp
     // restore callee saved registers
     0x41, 0x5E, // popq %r14
