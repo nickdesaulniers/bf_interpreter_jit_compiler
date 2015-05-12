@@ -22,8 +22,7 @@ static void jit (const char* const file_contents, fn_memset m, fn_putchar p,
   int relocation_site = 0;
   int relative_offset = 0;
   GUARD(vector_create(&instruction_stream, 100));
-  GUARD(vector_push(&instruction_stream, (char []) {
-    // prologue
+  char prologue [] = {
     0x55, // push rbp
     0x48, 0x89, 0xE5, // mov rbp, rsp
     // backup callee saved registers
@@ -53,57 +52,83 @@ static void jit (const char* const file_contents, fn_memset m, fn_putchar p,
     0xFF, 0xD1, // callq *%rcx
     0x49, 0x89, 0xE4 // movq %rsp, %r12
     // %r12 = &tape[0];
-  }, 52));
+  };
+  GUARD(vector_push(&instruction_stream, prologue, sizeof(prologue)));
 
   for (unsigned long i = 0; file_contents[i] != '\0'; ++i) {
     switch (file_contents[i]) {
       case '>':
-        GUARD(vector_push(&instruction_stream, (char[]) {
-          0x49, 0xFF, 0xC4 // inc %r12
-        }, 3));
+        // see: http://stackoverflow.com/a/8550253/1027966
+        {
+          char opcodes [] = {
+            0x49, 0xFF, 0xC4 // inc %r12
+          };
+          GUARD(vector_push(&instruction_stream, opcodes, sizeof(opcodes)));
+        }
         break;
       case '<':
-        GUARD(vector_push(&instruction_stream, (char[]) {
-          0x49, 0xFF, 0xCC // dec %r12
-        }, 3));
+        {
+          char opcodes [] = {
+            0x49, 0xFF, 0xCC // dec %r12
+          };
+          GUARD(vector_push(&instruction_stream, opcodes, sizeof(opcodes)));
+        }
         break;
       case '+':
-        GUARD(vector_push(&instruction_stream, (char[]) {
-          0x41, 0xFE, 0x04, 0x24 // incb (%r12)
-        }, 4));
+        {
+          char opcodes [] = {
+            0x41, 0xFE, 0x04, 0x24 // incb (%r12)
+          };
+          GUARD(vector_push(&instruction_stream, opcodes, sizeof(opcodes)));
+        }
         break;
       case '-':
-        GUARD(vector_push(&instruction_stream, (char[]) {
-          0x41, 0xFE, 0x0C, 0x24 // decv (%r12)
-        }, 4));
+        {
+          char opcodes [] = {
+            0x41, 0xFE, 0x0C, 0x24 // decv (%r12)
+          };
+          GUARD(vector_push(&instruction_stream, opcodes, sizeof(opcodes)));
+        }
         break;
       case '.':
-        GUARD(vector_push(&instruction_stream, (char[]) {
-          0x48, 0xC7, 0xC7, 0x00, 0x00, 0x00, 0x00, // movq $0, %rdi
-          0x41, 0x8A, 0x3C, 0x24, // movb (%r12), %dil
-          0x41, 0xFF, 0xD5 // callq *%r13
-        }, 14));
+        {
+          char opcodes [] = {
+            0x48, 0xC7, 0xC7, 0x00, 0x00, 0x00, 0x00, // movq $0, %rdi
+            0x41, 0x8A, 0x3C, 0x24, // movb (%r12), %dil
+            0x41, 0xFF, 0xD5 // callq *%r13
+          };
+          GUARD(vector_push(&instruction_stream, opcodes, sizeof(opcodes)));
+        }
         break;
       case ',':
-        GUARD(vector_push(&instruction_stream, (char[]) {
-          0x41, 0xFF, 0xD6, // callq *%r14
-          0x41, 0x88, 0x04, 0x24 // movb %al, (%r12)
-        }, 7));
+        {
+          char opcodes [] = {
+            0x41, 0xFF, 0xD6, // callq *%r14
+            0x41, 0x88, 0x04, 0x24 // movb %al, (%r12)
+          };
+          GUARD(vector_push(&instruction_stream, opcodes, sizeof(opcodes)));
+        }
         break;
       case '[':
-        GUARD(vector_push(&instruction_stream, (char[]) {
-          0x41, 0x80, 0x3C, 0x24, 0x00, // cmpb $0, (%r12)
-          // Needs to be patched up
-          0x0F, 0x84, 0x00, 0x00, 0x00, 0x00 // je <32b relative offset, 2's compliment, LE>
-        }, 11));
+        {
+          char opcodes [] = {
+            0x41, 0x80, 0x3C, 0x24, 0x00, // cmpb $0, (%r12)
+            // Needs to be patched up
+            0x0F, 0x84, 0x00, 0x00, 0x00, 0x00 // je <32b relative offset, 2's compliment, LE>
+          };
+          GUARD(vector_push(&instruction_stream, opcodes, sizeof(opcodes)));
+        }
         GUARD(stack_push(&relocation_table, instruction_stream.size)); // create a label after
         break;
       case ']':
-        GUARD(vector_push(&instruction_stream, (char[]) {
-          0x41, 0x80, 0x3C, 0x24, 0x00, // cmpb $0, (%r12)
-          // Needs to be patched up
-          0x0F, 0x85, 0x00, 0x00, 0x00, 0x00 // jne <33b relative offset, 2's compliment, LE>
-        }, 11));
+        {
+          char opcodes [] = {
+            0x41, 0x80, 0x3C, 0x24, 0x00, // cmpb $0, (%r12)
+            // Needs to be patched up
+            0x0F, 0x85, 0x00, 0x00, 0x00, 0x00 // jne <33b relative offset, 2's compliment, LE>
+          };
+          GUARD(vector_push(&instruction_stream, opcodes, sizeof(opcodes)));
+        }
         // patches self and matching open bracket
         GUARD(stack_pop(&relocation_table, &relocation_site));
         relative_offset = instruction_stream.size - relocation_site ;
@@ -113,8 +138,7 @@ static void jit (const char* const file_contents, fn_memset m, fn_putchar p,
     }
   }
 
-  GUARD(vector_push(&instruction_stream, (char []) {
-    // epilogue
+  char epilogue [] = {
     0x48, 0x81, 0xC4, 0x30, 0x75, 0x00, 0x00, // addq $30000, %rsp
     // restore callee saved registers
     0x41, 0x5E, // popq %r14
@@ -122,7 +146,8 @@ static void jit (const char* const file_contents, fn_memset m, fn_putchar p,
     0x41, 0x5C, // popq %r12
     0x5d, // pop rbp
     0xC3 // ret
-  }, 15));
+  };
+  GUARD(vector_push(&instruction_stream, epilogue, sizeof(epilogue)));
   print_instruction_stream(&instruction_stream);
 
   void* mem = mmap(NULL, instruction_stream.size, PROT_WRITE | PROT_EXEC,
