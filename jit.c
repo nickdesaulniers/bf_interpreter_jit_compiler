@@ -15,8 +15,8 @@ typedef void* fn_memset (void*, int, size_t);
 typedef int fn_putchar (int);
 typedef int fn_getchar ();
 
-static void jit (const char* const file_contents, fn_memset m, fn_putchar p,
-                 fn_getchar g) {
+void jit (const char* const file_contents, fn_memset m, fn_putchar p,
+          fn_getchar g) {
   struct vector instruction_stream;
   struct stack relocation_table = { .size = 0, .items = { 0 } };
   int relocation_site = 0;

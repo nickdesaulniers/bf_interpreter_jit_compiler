@@ -4,13 +4,13 @@
 
 void interpret (const char* const input) {
   // Initialize the tape with 30,000 zeroes.
-  unsigned char tape [30000] = {0};
+  unsigned char tape [30000] = { 0 };
 
   // Set the pointer to point at the left most cell of the tape.
   unsigned char* ptr = tape;
 
   char current_char;
-  for (int i = 0, loop; (current_char = input[i]) != '\0'; ++i) {
+  for (int i = 0; (current_char = input[i]) != '\0'; ++i) {
     switch (current_char) {
       case '>': ++ptr; break;
       case '<': --ptr; break;
@@ -20,7 +20,7 @@ void interpret (const char* const input) {
       case ',': *ptr = getchar(); break;
       case '[':
         if (!(*ptr)) {
-          loop = 1;
+          int loop = 1;
           while (loop > 0) {
             current_char = input[++i];
             if (current_char == ']') {
@@ -33,7 +33,7 @@ void interpret (const char* const input) {
         break;
       case ']':
         if (*ptr) {
-          loop = 1;
+          int loop = 1;
           while (loop > 0) {
             current_char = input[--i];
             if (current_char == '[') {
