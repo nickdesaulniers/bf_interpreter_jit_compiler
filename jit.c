@@ -15,8 +15,7 @@ typedef void* fn_memset (void*, int, size_t);
 typedef int fn_putchar (int);
 typedef int fn_getchar ();
 
-void jit (const char* const file_contents, fn_memset m, fn_putchar p,
-          fn_getchar g) {
+void jit (const char* const file_contents) {
   struct vector instruction_stream;
   struct stack relocation_table = { .size = 0, .items = { 0 } };
   int relocation_site = 0;
@@ -148,13 +147,13 @@ void jit (const char* const file_contents, fn_memset m, fn_putchar p,
     0xC3 // ret
   };
   GUARD(vector_push(&instruction_stream, epilogue, sizeof(epilogue)));
-  print_instruction_stream(&instruction_stream);
+  /*print_instruction_stream(&instruction_stream);*/
 
   void* mem = mmap(NULL, instruction_stream.size, PROT_WRITE | PROT_EXEC,
     MAP_ANON | MAP_PRIVATE, -1, 0);
   memcpy(mem, instruction_stream.data, instruction_stream.size);
   void (*jitted_func) (fn_memset, fn_putchar, fn_getchar) = mem;
-  jitted_func(m, p, g);
+  jitted_func(memset, putchar, getchar);
   munmap(mem, instruction_stream.size);
   vector_destroy(&instruction_stream);
 }
@@ -163,7 +162,7 @@ int main (int argc, char* argv []) {
   if (argc != 2) err("Usage: jit inputfile");
   char* file_contents = read_file(argv[1]);
   if (file_contents == NULL) err("Couldn't open file");
-  jit(file_contents, memset, putchar, getchar);
+  jit(file_contents);
   free(file_contents);
 }
 
