@@ -131,7 +131,7 @@ void jit (const char* const file_contents, fn_memset m, fn_putchar p,
         }
         // patches self and matching open bracket
         GUARD(stack_pop(&relocation_table, &relocation_site));
-        relative_offset = instruction_stream.size - relocation_site ;
+        relative_offset = instruction_stream.size - relocation_site;
         vector_write32LE(&instruction_stream, instruction_stream.size - 4, -relative_offset);
         vector_write32LE(&instruction_stream, relocation_site - 4, relative_offset);
         break;
