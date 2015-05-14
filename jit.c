@@ -24,7 +24,7 @@ void jit (const char* const file_contents, fn_memset m, fn_putchar p,
   GUARD(vector_create(&instruction_stream, 100));
   char prologue [] = {
     0x55, // push rbp
-    0x48, 0x89, 0xE5, // mov rbp, rsp
+    0x48, 0x89, 0xE5, // mov rsp, rbp
     // backup callee saved registers
     0x41, 0x54, // pushq %r12
     0x41, 0x55, // pushq %r13
