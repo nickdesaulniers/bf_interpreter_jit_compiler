@@ -125,7 +125,7 @@ void jit (const char* const file_contents, fn_memset m, fn_putchar p,
           char opcodes [] = {
             0x41, 0x80, 0x3C, 0x24, 0x00, // cmpb $0, (%r12)
             // Needs to be patched up
-            0x0F, 0x85, 0x00, 0x00, 0x00, 0x00 // jne <33b relative offset, 2's compliment, LE>
+            0x0F, 0x85, 0x00, 0x00, 0x00, 0x00 // jne <32b relative offset, 2's compliment, LE>
           };
           GUARD(vector_push(&instruction_stream, opcodes, sizeof(opcodes)));
         }
