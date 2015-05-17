@@ -1,5 +1,6 @@
 #include <stdlib.h> // malloc, free, realloc
 #include <string.h> // memcpy
+#include <stdint.h> // int32_t
 #include "vector.h"
 
 int vector_create (struct vector* const vec, int capacity) {
