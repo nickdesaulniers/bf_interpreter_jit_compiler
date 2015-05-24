@@ -37,10 +37,8 @@ void compile (const char* const file_contents) {
         puts("  decb (%r12)");
         break;
       case '.':
-        // zero out the register since putchar takes an int
-        // otherwise use movzbq
-        puts("  movq $0, %rdi");
-        puts("  movb (%r12), %dil");
+        // move byte to quad and zero upper bits since puchar takes an int
+        puts("  movzbq (%r12), %rdi");
         puts("  call _putchar");
         break;
       case ',':
