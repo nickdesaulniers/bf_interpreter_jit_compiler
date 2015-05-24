@@ -16,7 +16,7 @@ void compile (const char* const file_contents) {
     "  pushq %r12\n"        // store callee saved register
     "  subq $30008, %rsp\n" // allocate 30,008 B on stack, and realign
     "  leaq (%rsp), %rdi\n" // address of beginning of tape
-    "  movq $0, %rsi\n"     // fill with 0's
+    "  movl $0, %esi\n"     // fill with 0's
     "  movq $30000, %rdx\n" // length 30,000 B
     "  call _memset\n"      // memset
     "  movq %rsp, %r12";
