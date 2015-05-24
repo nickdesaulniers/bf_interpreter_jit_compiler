@@ -28,18 +28,17 @@ void jit (const char* const file_contents) {
     0x49, 0xBC, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // movq $x, %r12
     0x49, 0xBD, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // movq $x, %r13
     0x49, 0xBE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, // movq $x, %r14
-    // %r12 = memset
-    // %r13 = putchar
-    // %r14 = getchar
   };
   GUARD(vector_push(&instruction_stream, prologue, sizeof(prologue)));
-  GUARD(vector_write64LE(&instruction_stream, instruction_stream.size - 28, (long long int) &memcpy));
-  GUARD(vector_write64LE(&instruction_stream, instruction_stream.size - 18, (long long int) &putchar));
-  GUARD(vector_write64LE(&instruction_stream, instruction_stream.size - 8, (long long int) &getchar));
-  printf("address of memcpy:  %lld\n", (long long int) &memcpy);
-  printf("address of putchar: %lld\n", (long long int) &putchar);
-  printf("address of getchar: %lld\n", (long long int) &getchar);
-  print_instruction_stream(&instruction_stream);
+  GUARD(vector_write64LE(&instruction_stream, instruction_stream.size - 28,
+        (long long int) &memset));
+  GUARD(vector_write64LE(&instruction_stream, instruction_stream.size - 18,
+        (long long int) &putchar));
+  GUARD(vector_write64LE(&instruction_stream, instruction_stream.size - 8,
+        (long long int) &getchar));
+  // %r12 = memset
+  // %r13 = putchar
+  // %r14 = getchar
 
   char prologue2 [] = {
     // allocate 30,008 B on stack
@@ -56,7 +55,6 @@ void jit (const char* const file_contents) {
     // %r12 = &tape[0];
   };
   GUARD(vector_push(&instruction_stream, prologue2, sizeof(prologue2)));
-  print_instruction_stream(&instruction_stream);
 
   for (unsigned long i = 0; file_contents[i] != '\0'; ++i) {
     switch (file_contents[i]) {
@@ -150,7 +148,7 @@ void jit (const char* const file_contents) {
     0xC3 // ret
   };
   GUARD(vector_push(&instruction_stream, epilogue, sizeof(epilogue)));
-  print_instruction_stream(&instruction_stream);
+  /*print_instruction_stream(&instruction_stream);*/
 
   void* mem = mmap(NULL, instruction_stream.size, PROT_WRITE | PROT_EXEC,
     MAP_ANON | MAP_PRIVATE, -1, 0);
