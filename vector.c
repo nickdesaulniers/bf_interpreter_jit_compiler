@@ -1,6 +1,5 @@
 #include <stdlib.h> // malloc, free, realloc
 #include <string.h> // memcpy
-#include <stdint.h> // int32_t
 #include "vector.h"
 
 int vector_create (struct vector* const vec, int capacity) {
@@ -35,7 +34,7 @@ int vector_push (struct vector* const vec, char* bytes, int len) {
   return 0;
 }
 
-int vector_write32LE (struct vector* const vec, int offset, int32_t value) {
+int vector_write32LE (struct vector* const vec, int offset, long int value) {
   if (offset >= vec->size) {
     return -1;
   }
@@ -44,6 +43,23 @@ int vector_write32LE (struct vector* const vec, int offset, int32_t value) {
   vec->data[offset + 2] = (value & 0x00FF0000) >> 16;
   vec->data[offset + 1] = (value & 0x0000FF00) >> 8;
   vec->data[offset + 0] = (value & 0x000000FF);
+  return 0;
+}
+
+int vector_write64LE (struct vector* const vec, int offset, long long int value) {
+   if (offset >= vec->size) {
+    return -1;
+  }
+  // offset opposite of usual since we explicitly want LE
+  vec->data[offset + 7] = (value & 0xFF00000000000000) >> 56;
+  vec->data[offset + 6] = (value & 0x00FF000000000000) >> 48;
+  vec->data[offset + 5] = (value & 0x0000FF0000000000) >> 40;
+  vec->data[offset + 4] = (value & 0x000000FF00000000) >> 32;
+
+  vec->data[offset + 3] = (value & 0x00000000FF000000) >> 24;
+  vec->data[offset + 2] = (value & 0x0000000000FF0000) >> 16;
+  vec->data[offset + 1] = (value & 0x000000000000FF00) >> 8;
+  vec->data[offset + 0] = (value & 0x00000000000000FF);
   return 0;
 }
 
