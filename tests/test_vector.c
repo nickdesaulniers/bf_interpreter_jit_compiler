@@ -66,5 +66,23 @@ int main () {
   assert(vec.data[7] == (char) 0xFF);
   GUARD(vector_destroy(&vec));
 
+  puts("testing writing 64 b little endian 2's compliment");
+  GUARD(vector_create(&vec, 10));
+  GUARD(vector_push(&vec, (char[]) { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 }, 10));
+  // 5 billion > 2^23 - 1
+  GUARD(vector_write64LE(&vec, 1, 5000000000));
+  assert(vec.data[0] == 0x00);
+  assert(vec.data[1] == 0x00);
+  assert(vec.data[2] == (char) 0xF2);
+  assert(vec.data[3] == 0x05);
+  assert(vec.data[4] == 0x2A);
+  assert(vec.data[5] == 0x01);
+  assert(vec.data[6] == 0x00);
+  assert(vec.data[7] == 0x00);
+  assert(vec.data[8] == 0x00);
+  assert(vec.data[9] == 0x09);
+  GUARD(vector_destroy(&vec));
+
   puts("tests pass");
 }
+
