@@ -37,8 +37,9 @@ void compile (const char* const file_contents) {
         puts("  decb (%r12)");
         break;
       case '.':
-        // move byte to quad and zero upper bits since puchar takes an int
-        puts("  movzbq (%r12), %rdi");
+        // move byte to double word and zero upper bits since putchar takes an
+        // int.
+        puts("  movzbl (%r12), %edi");
         puts("  call _putchar");
         break;
       case ',':

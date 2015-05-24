@@ -91,7 +91,7 @@ void jit (const char* const file_contents) {
       case '.':
         {
           char opcodes [] = {
-            0x49, 0x0F, 0xB6, 0x3C, 0x24, // movzbq (%r12), %rdi
+            0x41, 0x0F, 0xB6, 0x3C, 0x24, // movzbl (%r12), %edi
             0x41, 0xFF, 0xD5 // callq *%r13
           };
           GUARD(vector_push(&instruction_stream, opcodes, sizeof(opcodes)));
